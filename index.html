@@ -1,0 +1,79 @@
+<html>
+
+<head>
+    <title>Web encrypt/decrypt</title>
+    <style>
+        div {
+            margin-top: 5pt;
+        }
+    </style>
+</head>
+
+<body>
+    <div>Library: CryptoJS 4.1.1</div>
+    <div>
+        <input id="input_password" type="text" placeholder="password"></input>
+    </div>
+    <div>
+        <textarea id="input_row" rows="15" cols="50"></textarea>
+    </div>
+    <div>
+
+        <div>
+            <input type="radio" id="radio_encrypt" name="radio_mode" value="encrypt" checked>
+            <label for="radio_encrypt">Encrypt</label>
+        </div>
+
+        <div>
+            <input type="radio" id="radio_decrypt" name="radio_mode" value="decrypt">
+            <label for="radio_decrypt">Decrypt</label>
+        </div>
+
+        <button id="submit" value="Submit" onclick="onSubmitClick()">Submit</button>
+    </div>
+    <div>
+        <textarea id="output" rows="15" cols="50"></textarea>
+    </div>
+
+</body>
+
+</html>
+
+<script type="text/javascript" src="bower_components/crypto-js/crypto-js.js"></script>
+<script type="text/javascript">
+    const config = {
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    }
+
+    function onSubmitClick() {
+
+        var mode = document.querySelector('input[name="radio_mode"]:checked').value;
+        console.log(`Mode > ${mode}`)
+        var inputValue = processInput(document.getElementById("input_row").value)
+        console.log(`Value read [${inputValue}]`)
+        var password = processInput(document.getElementById("input_password").value)
+        console.log(`Password read [${password}]`)
+
+        if(password.length == 0) {
+            alert("Password missing")
+            return
+        }
+
+        if(mode == "encrypt") {
+
+            var output = CryptoJS.AES.encrypt(inputValue, password, config)
+            document.getElementById("output").value = output
+
+        } else {
+        
+            var output = CryptoJS.AES.decrypt(inputValue, password, config).toString(CryptoJS.enc.Utf8);
+            document.getElementById("output").value = output
+
+        }
+    }
+
+    function processInput(value) {
+        return value.trim()
+    }
+</script>
